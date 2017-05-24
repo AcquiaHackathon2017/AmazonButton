@@ -1,17 +1,35 @@
 version: 1.0.0
-
-variables:
-
 services:
+ - mysql
 
 events:
   build:
     steps:
-	- deploy:
-		script:
-			-pipelines-deploy
-  pr-merged:
+      - setup:
+          type: script
+          script:
+            - set -x
+            - composer validate --no-check-all --ansi
+            - composer install
+      - install:
+          type: script
+          script:
+            - set -x
+            - mysql -u root -proot -e 'CREATE DATABASE drupal;'
+            - ./bin/phing install -Ddb.password=root -Ddb.database=drupal
+            - ./bin/phing cloud-db-snippet
+      - test:
+          type: script
+          script:
+            - set -x
+            - cd docroot
+            - ../bin/drush runserver --default-server=builtin 8080 &>/dev/null &
+            - ../bin/phantomjs --webdriver=4444 > /dev/null &
+      - deploy:
+         script:
+            -pipelines-deploy
+pr-merged:
 
-  pr-closed:
+pr-closed:
 
 ssh-keys:
