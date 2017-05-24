@@ -1,17 +1,10 @@
 version: 1.0.0
-
-variables:
-
-services:
-
 events:
   build:
     steps:
-	- deploy:
-		script:
-			-pipelines-deploy
-  pr-merged:
+      - lightning:
+          type: script
+          script:
+            # The composer create project files and settings.php db and profile configurations have been provided in the tutorial branch or release. We only need run composer.
+            - composer install --no-progress
 
-  pr-closed:
-
-ssh-keys:
