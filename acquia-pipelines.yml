@@ -28,8 +28,4 @@ events:
       - deploy:
          script:
             -pipelines-deploy
-pr-merged:
 
-pr-closed:
-
-ssh-keys:
